@@ -69,26 +69,14 @@ public :
 
 		for(int i = 0; i < 1; i++){
 
-			nc.clearClusterId();
-			nc.canopyClustering(thresholdArr);
+//			nc.clearClusterId();
+//			nc.canopyClustering(thresholdArr);
 
 
 			//std::cout<<std::endl;
-			std::cout<<inputfile<<"[alpha="<<alpha<<"]"<<"[Threshold="<<thresholdArr<<"  WORK FINISHED!"<<std::endl;
 
 			std::string fileName(inputfile);
-			fileName.append("_alpha[");
-			fileName.append(alphaChar);
-			fileName.append("]");
-			fileName.append("_Threshold[");
-			fileName.append(thresholdChar);
-			fileName.append("]_");
-			fileName.append("dimension_3");
-			char x[20];
-			int a = DIMESION;
-			memcpy(&a, x, sizeof(int));
-			
-			fileName.append(".txt");
+			fileName.append("_position.out");
 
 			char *outputName=new char[fileName.size()+1];
 			outputName[fileName.size()]=0;

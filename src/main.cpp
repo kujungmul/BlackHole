@@ -19,10 +19,11 @@ int main(int argc, char* args[]){
 
 	ClusterPlay::play(args[1], alpha, args[2]);
 
-	return 0;
+	std::string fileName(args[1]);
+	fileName.append("_position.out");
 
-	/*
-	DbscanPlay::dbscanCalculator();
+
+	DbscanPlay::dbscanCalculator((char *)fileName.c_str(), 5, 0.1/100.0f);
  	if (strcmp(args[1], "dbscan") == 0){
 		if (argc != 5){
 			std::cout << "Check parameter!" << std::endl;
@@ -30,7 +31,9 @@ int main(int argc, char* args[]){
 			std::cout << "dbscan filename minPts 0.1(means 0.1%)" << std::endl;
 			return 0;
 		}
-		dbscanCalculator(args[2], atoi(args[3]), atof(args[4]) / 100.0f);
+		//dbscanCalculator(args[2], atoi(args[3]), atof(args[4]) / 100.0f);
 	}
-	*/
+
+
+	return 0;
 }

@@ -16,6 +16,10 @@
 #include <string>
 #include <utility>
 
+
+
+const double PI = 3.141592653589793238463;
+
 class dbScanPoint{
 	public:
 		float x;
@@ -26,7 +30,6 @@ class dbScanPoint{
 class DbscanPlay{
 public :
 
-	static const double PI = 3.141592653589793238463;
 
 	static double  calcDist(double dX0, double dY0, double dX1, double dY1, double dZ0, double dZ1){
 		return sqrt((dX1 - dX0)*(dX1 - dX0) + (dY1 - dY0)*(dY1 - dY0) + (dZ1 - dZ0)*(dZ1 - dZ0));
