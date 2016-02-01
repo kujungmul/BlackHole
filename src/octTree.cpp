@@ -1,0 +1,227 @@
+#include "octTree.hpp"
+#include "memoryManager.hpp"
+
+
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+
+OctTree::OctTree(){
+	children = NULL;
+	this->childLength = -1;	
+	this->childCount = -1;
+	this->node = NULL;
+	for(int i = 0; i < DIMESION; i++){
+		this->position[i] = -1;
+		this->minPos[i] = -1;
+		this->maxPos[i] = -1;
+	}
+	this->weight = node == NULL ? 0.0 : node->getDegree();
+}
+
+OctTree::OctTree(blackHoleNode* node, double* position, double* minPos, double* maxPos){
+	children = NULL;
+	this->childLength = (int)pow(2.0, DIMESION);	
+	this->childCount = 0;
+	this->node = node;
+	for (int i = 0; i < DIMESION; i++){
+		this->position[i] = position[i];
+		this->minPos[i] = minPos[i];
+		this->maxPos[i] = maxPos[i];
+	}
+	this->weight = node == NULL ? 0.0 : node->getDegree();
+}
+
+ void OctTree::setElement(blackHoleNode* node, double* position, double* minPos, double* maxPos, memoryManager* mgr){
+	
+	children = mgr->get_children();
+	for (int s = 0; s < (int)pow(2.0, DIMESION); s++){
+		children[s] = NULL;
+	}
+	this->childLength = (int)pow(2.0, DIMESION);
+	this->childCount = 0;
+	this->node = node;
+
+	for (int i = 0; i < DIMESION; i++){
+		this->position[i] = position[i];
+		this->minPos[i] = minPos[i];
+		this->maxPos[i] = maxPos[i];
+	}
+	this->weight = node == NULL ? 0.0 : node->getDegree();
+}
+
+ int OctTree::getLength(){
+	return childLength;
+}
+
+ void OctTree::LengthIncrease(){
+	childLength = childLength * 2 ;
+}
+
+ double OctTree::getWeight(){
+	return weight;
+}
+
+ void OctTree::addNode(blackHoleNode* newNode, double* newPos, int depth, memoryManager* mgr){
+	if (newNode->getDegree() == 0)
+		return;
+
+	if (node != NULL){	//if node is empty
+		addNode2(node, position, depth, mgr, false);	
+		node = NULL;
+	}
+
+	for (int z = 0; z < DIMESION; z++){
+		position[z] = (weight * position[z] + newNode->getDegree() * newPos[z]) / (weight + newNode->getDegree());
+	}
+	weight += newNode->getDegree();
+
+	addNode2(newNode, newPos, depth, mgr, false);
+}
+
+
+ void OctTree::addNode2(blackHoleNode* newNode, double* newPos, int depth, memoryManager* mgr, bool isOriginalNode){
+	
+	if(depth == MAX_DEPTH){
+		if(childLength == childCount) {	//full
+			OctTree** oldChildren = new OctTree*[childLength];
+			for(int ss = 0; ss < childLength; ss++){
+				oldChildren[ss] = children[ss];	
+			}
+			children = new OctTree*[ 2 * childLength ];
+			LengthIncrease();	
+
+			for(int k = 0; k < childLength/2; k++){ //ArrayCopy
+				children[k] = oldChildren[k];	
+			}
+			for(int k = childLength/2; k < childLength; k++){
+				children[k] = NULL;
+			}
+			delete [] oldChildren;
+		}
+		children[childCount++] = mgr->get_Instance();
+		children[childCount-1]->setElement(newNode, newPos, newPos, newPos, mgr);
+		if(isOriginalNode == true){	
+			mgr->swap(children[childCount-1]);
+		}
+		return;
+	}
+
+	int childIndex = 0;
+
+	for (int d = 0; d < DIMESION; d++){	
+		if(newPos[d] > (minPos[d] + maxPos[d])/2){
+			childIndex += 1 << d;
+		}
+	}
+
+	if(children[childIndex] == NULL){
+		double newMinPos[DIMESION];
+		double newMaxPos[DIMESION];
+		for (int d = 0; d < DIMESION; d++){
+			if ((childIndex & 1 << d ) == 0 ) {
+				newMinPos[d] = minPos[d];
+				newMaxPos[d] = (minPos[d] + maxPos[d]) / 2;
+			}
+			else{
+				newMinPos[d] = (minPos[d] + maxPos[d]) / 2;
+				newMaxPos[d] = maxPos[d];
+			}
+		}
+		childCount++;
+		children[childIndex] = mgr->get_Instance();
+		children[childIndex]->setElement(newNode, newPos, newMinPos, newMaxPos, mgr); 
+		if(isOriginalNode == true){
+			mgr->swap(children[childIndex]);
+		}
+		
+	}
+	else{
+		children[childIndex]->addNode(newNode, newPos, depth+1, mgr);
+	}
+}
+
+ /*Use*/
+ void OctTree::removeNode(blackHoleNode* oldNode, double* oldPos, int depth, memoryManager* mgr){
+	if(oldNode->getDegree() == 0)
+		return;
+	if(weight <= oldNode->getDegree()){	//remove in leaf
+		weight = 0.0;
+		node = NULL;
+		for(int i = 0; i < this->childLength; i++){
+			children[i] = NULL;
+		}
+		childCount = 0;
+		return;
+	}
+
+	for (int d = 0; d < DIMESION; d++){
+		position[d] = (weight*position[d] - oldNode->getDegree() * oldPos[d]) / (weight - oldNode->getDegree());
+	}
+	weight -= oldNode->getDegree();
+
+	if(depth == MAX_DEPTH){
+		int childIndex = 0;
+		while(children[childIndex]->node->getID() != oldNode->getID()){	
+			childIndex++;
+		}
+		
+		childCount--;
+		for(int i = childIndex; i < childCount; i++){	//fadding!
+			children[i] = children[i+1];
+		}
+		children[childCount] = NULL;
+	}
+	else{
+		int childIndex = 0;
+		for (int d = 0; d < DIMESION; d++){
+			if ( oldPos[d] > (minPos[d] + maxPos[d])/2){
+				childIndex += 1 << d;
+			}
+		}
+		children[childIndex]->removeNode(oldNode, oldPos, depth+1, mgr);
+		if(children[childIndex]->getWeight() == 0){
+			children[childIndex] = NULL;
+			childCount--;
+		}
+	}
+}
+ /*Use*/
+ void OctTree::clearMemory(){
+	clearMemory(this);
+}
+ /*Use*/
+ void OctTree::clearMemory(OctTree* p){
+	if(p != NULL) {
+		for(int i = 0; i < p->childLength; i++){
+			clearMemory(p->children[i]);
+		}
+	}
+	delete p;
+}
+
+ double* OctTree::getValues(){
+	 return position;
+ }
+
+
+ /*Use*/
+ double OctTree::getWidth() {
+	 double width = 0.0;
+	 for (int d = 0; d < DIMESION; d++){
+		 if (maxPos[d] - minPos[d] > width){
+			 width = maxPos[d] - minPos[d];
+		 }
+	 }
+	 return width;
+ }
+ /*Use*/
+ int OctTree::getHeight(){
+	 int height = -1;
+
+	 for (int s = 0; s < childLength; s++){
+		 if (children[s] != NULL){// != NULL){
+			 height = max(height, children[s]->getHeight());
+		 }
+	 }
+	 return height + 1;
+ }
