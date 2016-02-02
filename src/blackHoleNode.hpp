@@ -27,8 +27,6 @@ private :
 	int degree;
 	std::vector<int> eSet;
 public :
-	blackHoleNode();
-	blackHoleNode(int nNodeId);
 	blackHoleNode(int nNodeId, int other);
 	void setClusterId(int x);
 	int getClusterId();

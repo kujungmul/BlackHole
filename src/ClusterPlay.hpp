@@ -16,9 +16,6 @@
 double Ecurrent = 0.0;
 double Eprior = 0.0;
 
-double MMMM = 0;
-
-
 class ClusterPlay{
 public :
 	static void play(char* inputfile, double alpha, char* alphaChar){
@@ -41,7 +38,7 @@ public :
 
 		std::vector<blackHoleNode*>* vecp = nc.getNodeVec();
 		double initEnergy = 0.0;
-		for(int k = 0; k < (*vecp).size(); k++){
+		for(unsigned int k = 0; k < (*vecp).size(); k++){
 			initEnergy += nc.getEnergy((*vecp)[k], expVar, tt); 
 		}
 		std::cout<<"initEnergy = "<<initEnergy<<std::endl;
@@ -54,8 +51,6 @@ public :
 		for(int i = 0; i < iter; i++){
 			memMgr.setChildCurrent(0);
 			memMgr.setCurrent(0);
-			MMMM = i+1;
-
 			updateBarneshut(i, &nc, expVar, &memMgr, iter);	//UPDATE FUNCTION
 
 		}
@@ -89,7 +84,6 @@ public :
 
 
 	static bool updateBarneshut(int currentIter, nodeCollection* p, exponentVar& expVar, memoryManager* mgr, int nrIteration){
-		//std::cout<<iteration<<std::endl;
 
 		double energySum = 0.0;
 

@@ -23,7 +23,6 @@ private :
 	float** adjMat;
 public :
 	void putNode(int nNodeId, int other);
-	//void setClear();
 	void clearAll();
 	void copyToVector();	
 	bool checkEdge(int id1_notMinus, int id2_notMinus);
