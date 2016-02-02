@@ -1,41 +1,37 @@
-
-
-#include <sys/time.h>
+#include "Util.hpp"
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <string>
 #include <algorithm>
 #include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <ctime>
-#include <fstream>
-#include <functional>
-#include <iostream>
-#include <map>
+#include <vector>
 #include <set>
 #include <sstream>
-#include <string>
-#include <utility>
-
-
+#include <cstring>
 
 const double PI = 3.141592653589793238463;
 
-class dbScanPoint{
-	public:
-		float x;
-		float y;
-		float z;
+class point{
+public:
+	float x;
+	float y;
 };
 
-class DbscanPlay{
+double calcDist(float* a[DIMENSION], int i, int j ){
+		double sum = 0.0;
+		for (int z = 0; z < DIMENSION; z++){
+			//sum = sum + ((a[i] - b[i]) * (a[i] - b[i]));
+			sum = sum + ((a[z][i] - a[z][j]) * (a[z][i] - a[z][j]));
+		}
+
+		return sqrt(sum);
+}
+
+class DBscanPlay{
 public :
-
-
-	static double  calcDist(double dX0, double dY0, double dX1, double dY1, double dZ0, double dZ1){
-		return sqrt((dX1 - dX0)*(dX1 - dX0) + (dY1 - dY0)*(dY1 - dY0) + (dZ1 - dZ0)*(dZ1 - dZ0));
-	}
-
-	static void  dbscanCalculator(char * inputFile, int minPts, float removePercentage){
+	static void dbscanCalculator(char * inputFile, int minPts, float removePercentage){
 
 		clock_t start_time, end_time;	  // clock_t
 		start_time = clock();				  // Start_Time
@@ -46,13 +42,13 @@ public :
 		std::stringstream out;
 		out << minPts;
 
-		std::ostringstream streamer;
-		streamer << removePercentage * 100;
-		std::string removeP(streamer.str());
+		std::ostringstream ss;
+		ss << removePercentage * 100;
+		std::string removeP(ss.str());
 
 		nodeCmty.open(inputFile);
 		std::string line;
-		std::string x, y, z, del, cluster;
+		std::string x, y, z, z_1, del, cluster;
 		int nodeNum = 0;
 		int nid;
 		int maxValue, nodeNumber;
@@ -78,34 +74,40 @@ public :
 		nodeCmty2.open(inputFile);
 
 		int* communitySelf = new int[nodeNum];
-		float* X = new float[nodeNum];
-		float* Y = new float[nodeNum];
-		float* Z = new float[nodeNum];
+
+		std::cout<<"Dimension : "<<DIMENSION<<std::endl;
+		float* points[DIMENSION];
+		for(int i = 0; i < DIMENSION; i++){
+			points[i] = new float[nodeNum];
+		}
+
 		bool* visited = new bool[nodeNum];
 		int* countN = new int[nodeNum];
 		int* cmty = new int[nodeNum];
 		bool* isSeed = new bool[nodeNum];
-		for (int i = 0; i < nodeNum; i++){
-			X[i] = 0.0f;
-			Y[i] = 0.0f;
-			Z[i] = 0.0f;
-			visited[i] = false;
-			countN[i] = 0;
-			cmty[i] = -1;
-			isSeed[i] = false;
+		for (int ttt = 0; ttt < nodeNum; ttt++){
+			for(int j = 0; j < DIMENSION; j++){
+				points[j][ttt] = 0.0f;
+			}
+			visited[ttt] = false;
+			countN[ttt] = 0;
+			cmty[ttt] = -1;
+			isSeed[ttt] = false;
 		}
+
 		int tmo = 0;
+		std::string tempp;
 		if (nodeCmty2.is_open()){
 			while (getline(nodeCmty2, line)){
 				strcpy(oneLine, line.c_str());
 				del = strtok(oneLine, "\t ");
-				x = strtok(NULL, "\t ");
-				y = strtok(NULL, "\t ");
-				z = strtok(NULL, "\t ");
-				X[tmo] = atof(x.c_str());
-				Y[tmo] = atof(y.c_str());
-				Z[tmo] = atof(z.c_str());
 
+
+
+				for(int j = 0; j < DIMENSION; j++){
+					tempp = strtok(NULL, "\t ");
+					points[j][tmo] = atof(tempp.c_str());
+				}
 				tmo++;
 			}
 		}
@@ -122,7 +124,7 @@ public :
 
 		for (int i = 0; i < nodeNum; i++){
 			for (int j = 0; j < nodeNum; j++){
-				dist_sorted[j] = calcDist(X[i], Y[i], X[j], Y[j], Z[i], Z[j]);		//precalc
+				dist_sorted[j] = calcDist(points, i, j);		//precalc
 			}
 			std::sort(dist_sorted, dist_sorted + nodeNum);
 			dist_vec[i] = dist_sorted[minPts - 1];
@@ -159,8 +161,8 @@ public :
 
 		std::string outputdistance = str + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_distance.dat";
 		distanceofs.open(outputdistance.c_str());
-		for (int i = 0; i < nodeNum; i++){
-			distanceofs << i + 1 << "\t" << dist_vec[i] << std::endl;
+		for (int ppo = 0; ppo < nodeNum; ppo++){
+			distanceofs << ppo + 1 << "\t" << dist_vec[ppo] << std::endl;
 		}
 
 		distanceofs.close();
@@ -168,12 +170,16 @@ public :
 
 
 		//Save to point array
-		dbScanPoint* original = new dbScanPoint[nodeNum];
+		point* original = new point[nodeNum];
 		for (int i = 0; i < nodeNum; i++){
 			original[i].x = i;
 			original[i].y = dist_vec[i];
 		}
 		std::cout << "Step 4\t";
+
+
+
+
 
 
 		//find minVal, maxVal of Y
@@ -231,7 +237,7 @@ public :
 
 		for (int i = 0; i < nodeNum; i++){
 			for (int j = 0; j < nodeNum; j++){
-				if (calcDist(X[i], Y[i], X[j], Y[j], Z[i], Z[j]) <= eps){
+				if (calcDist(points, i, j) <= eps){
 					countN[i]++;
 				}
 			}
@@ -261,7 +267,7 @@ public :
 					if (i == j)
 						continue;
 
-					if (calcDist(X[i], Y[i], X[j], Y[j], Z[i], Z[j]) <= eps){
+					if (calcDist(points, i, j) <= eps){
 						setN.insert(j);
 						if (countN[j] >= minPts){
 							isSeed[j] = true;
@@ -281,7 +287,7 @@ public :
 							if (cur == k)
 								continue;
 
-							if (calcDist(X[cur], Y[cur], X[k], Y[k], Z[cur], Z[k]) <= eps){
+							if (calcDist(points, cur, k) <= eps){
 								setN.insert(k);
 								if (countN[k] >= minPts){
 									isSeed[k] = true;
@@ -298,7 +304,7 @@ public :
 					if (i == j)
 						continue;
 
-					if (calcDist(X[i], Y[i], X[j], Y[j], Z[i], Z[j]) <= eps){
+					if (calcDist(points, i, j) <= eps){
 						if (visited[j] == false){   //unvisited
 							visited[j] = true;
 							cmty[j] = cmty[i];
@@ -323,7 +329,6 @@ public :
 		std::string outputname = str + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_EPS_" + varAs + ".dat";
 		ofs.open(outputname.c_str());
 		for (int z = 0; z< nodeNum; z++){
-
 			ofs << z + 1 << "\t" << cmty[z] << "\t" << isSeed[z] << std::endl;
 		}
 
@@ -335,17 +340,19 @@ public :
 		printf("Time : %f\n", ((double)(end_time - start_time)) / CLOCKS_PER_SEC);
 
 
+		delete[] original;
 		ofs.close();
 		nodeCmty2.close();
 
-		delete[] original;
-		delete[] X;
-		delete[] Y;
-		delete[] Z;
+		for(int z = 0; z < DIMENSION; z++){
+			delete[] points[z];
+		}
+
+		//delete points;
+
 		delete[] cmty;
 		delete[] visited;
 		delete[] isSeed;
 		delete[]communitySelf;
 	}
-
 };

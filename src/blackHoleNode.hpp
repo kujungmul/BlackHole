@@ -11,7 +11,7 @@
 class node{
 protected :
 	int nodeId;
-	double points[DIMESION];
+	double points[DIMENSION];
 
 public :
 	bool setPosition(int nLabel, double* ar);

@@ -14,7 +14,6 @@
 
 #pragma once
 
-#define DIMESION 3
 
 double Ecurrent = 0.0;
 double Eprior = 0.0;
@@ -64,28 +63,16 @@ public :
 
 		std::cout<<"Current = "<<memMgr.getCurrent()<<"\t ChildCurrent = "<<memMgr.getChildCurrent()<<std::endl;
 
-		double thresholdArr = 0.1;
-		char* thresholdChar = "0.1";
+		std::string fileName(inputfile);
+		fileName.append("_position.out");
 
-		for(int i = 0; i < 1; i++){
+		char *outputName=new char[fileName.size()+1];
+		outputName[fileName.size()]=0;
+		memcpy(outputName,fileName.c_str(),fileName.size());
 
-//			nc.clearClusterId();
-//			nc.canopyClustering(thresholdArr);
+		fr.writeFile(outputName,&nc);
 
-
-			//std::cout<<std::endl;
-
-			std::string fileName(inputfile);
-			fileName.append("_position.out");
-
-			char *outputName=new char[fileName.size()+1];
-			outputName[fileName.size()]=0;
-			memcpy(outputName,fileName.c_str(),fileName.size());
-
-			fr.writeFile(outputName,&nc);
-
-			delete outputName;
-		}
+		delete outputName;
 
 		std::cout<<"######################################"<<std::endl;
 		std::cout<<std::endl;
@@ -110,16 +97,16 @@ public :
 		double attrExponent =  expVar.getAttrExponent();
 		double repuExponent = expVar.getRepuExponent();
 
-		double XY[DIMESION] = { 0.0,0.0,0.0 };
-		double X1Y1[DIMESION] = {0.0,0.0,0.0 };
-		double oldXY[DIMESION] = { 0.0,0.0,0.0 };
+		double XY[] = { 0.0, };
+		double X1Y1[] = {0.0, };
+		double oldXY[] = { 0.0, };
 
 		for(unsigned int i = 0; i < (*vect).size(); i++){
 			double oldEnergy = p->getEnergy((*vect)[i], expVar, octTree);
-			double bestDir[DIMESION] = { 0.0, 0.0, 0.0 };
+			double bestDir[] = { 0.0, };
 			p->setDir((*vect)[i], bestDir, expVar, octTree);
 
-			for (int k = 0; k < DIMESION; k++){
+			for (int k = 0; k < DIMENSION; k++){
 				X1Y1[k] = (*vect)[i]->getValue(k);
 				XY[k] = X1Y1[k];
 				oldXY[k] = X1Y1[k];
@@ -130,13 +117,13 @@ public :
 			
 			int bestMultiple = 0;
 
-			for (int k = 0; k < DIMESION; k++){
+			for (int k = 0; k < DIMENSION; k++){
 				bestDir[k] = bestDir[k] / 32.0;
 			}
 						
 			for (int multiple = 32;	 multiple >= 1 && (bestMultiple==0 || bestMultiple/2==multiple); multiple /= 2) {
 				octTree->removeNode((*vect)[i],XY, 0, mgr);
-				for (int ss = 0; ss < DIMESION; ss++){
+				for (int ss = 0; ss < DIMENSION; ss++){
 					(*vect)[i]->setValue(oldXY[ss] + bestDir[ss] * multiple, ss);
 					XY[ss] = oldXY[ss] + bestDir[ss] * multiple;
 				}
@@ -154,7 +141,7 @@ public :
 			for (int multiple = 64;  multiple <= 128 && bestMultiple == multiple/2;  multiple *= 2) {
 				octTree->removeNode((*vect)[i],XY, 0, mgr);
 
-				for (int ss = 0; ss < DIMESION; ss++){
+				for (int ss = 0; ss < DIMENSION ; ss++){
 					(*vect)[i]->setValue(oldXY[ss] + bestDir[ss] * multiple, ss);
 					XY[ss] = oldXY[ss] + bestDir[ss] * multiple;
 				}
@@ -169,7 +156,7 @@ public :
 			}
 
 			octTree->removeNode((*vect)[i],XY, 0, mgr);
-			for (int ss = 0; ss < DIMESION; ss++){
+			for (int ss = 0; ss < DIMENSION ; ss++){
 				(*vect)[i]->setValue(oldXY[ss] + bestDir[ss] * bestMultiple, ss);
 				XY[ss] = oldXY[ss] + bestDir[ss] * bestMultiple;
 			}
@@ -184,12 +171,12 @@ public :
 	}
 
 	static OctTree* buildOctTree(nodeCollection* ncp, memoryManager* mgr){
-		double minPos[DIMESION] = { 0, };
-		double maxPos[DIMESION] = { 0, };
-		double position[DIMESION] = { 0, };
-		double positionTemp[DIMESION] = { 0, };
+		double minPos[] = { 0, };
+		double maxPos[] = { 0, };
+		double position[] = { 0, };
+		double positionTemp[] = { 0, };
 
-		for (int i = 0; i < DIMESION; i++){
+		for (int i = 0; i < DIMENSION ; i++){
 			minPos[i] = 999999;
 			maxPos[i] = -999999;
 		}
@@ -199,30 +186,30 @@ public :
 			if((*vect)[s]->getDegree() == 0)
 				continue;
 
-			for (int z = 0; z < DIMESION; z++){
+			for (int z = 0; z < DIMENSION ; z++){
 				position[z] = (*vect)[s]->getValue(z);
 			}
 
-			for (int d = 0; d < DIMESION; d++){
+			for (int d = 0; d < DIMENSION ; d++){
 				minPos[d] = min(position[d], minPos[d]);
 				maxPos[d] = max(position[d], maxPos[d]);
 			}
 		}
 
 		// provide additional space for moving nodes
-		for (int d = 0; d < DIMESION; d++){
+		for (int d = 0; d < DIMENSION ; d++){
 			double posDiff = maxPos[d] - minPos[d];
 			maxPos[d] += posDiff / 2;
 			minPos[d] -= posDiff / 2;
 		}
-		double temp[DIMESION] = { 0, };
+		double temp[] = { 0, };
 		
 		// add nodes with non-zero weight to the octtree
 		OctTree* result = mgr->get_Instance();
 		result->setElement(NULL, temp, minPos, maxPos, mgr);
 
 		for(unsigned int s = 0; s <  (*vect).size(); s++){	//to all nodes search
-			for (int kk = 0; kk < DIMESION; kk++){
+			for (int kk = 0; kk < DIMENSION ; kk++){
 				positionTemp[kk] = (*vect)[s]->getValue(kk);
 			}
 			blackHoleNode* t = (*vect)[s];

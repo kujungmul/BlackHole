@@ -82,7 +82,7 @@ public :
 		std::vector<blackHoleNode*>* vect = ncp->getNodeVec();
 		for(unsigned int i = 0; i < (*vect).size(); i++){
 			outputFileStreamer << (*vect)[i]->getID() << "\t";
-			for (int p = 0; p < DIMESION; p++){
+			for (int p = 0; p < DIMENSION; p++){
 				outputFileStreamer << (*vect)[i]->getValue(p) << "\t";
 			}
 			//outputFileStreamer <<(*vect)[i]->getClusterId()<<std::endl;

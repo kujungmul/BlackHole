@@ -2,7 +2,7 @@
 
 bool node::setPosition(int nI, double* ar){
 	nodeId = nI;
-	for (int z = 0; z < DIMESION; z++){
+	for (int z = 0; z < DIMENSION; z++){
 		points[z] = ar[z];
 	}
 	return true;
@@ -58,7 +58,7 @@ bool blackHoleNode::findEdge(int origin, int id){
 
 blackHoleNode::blackHoleNode(int nNodeId, int ep){
 	nodeId = nNodeId;
-	for (int z = 0; z < DIMESION; z++){
+	for (int z = 0; z < DIMENSION; z++){
 		points[z] = static_cast <float> (rand()) / static_cast <float> (RAND_MAX)-0.5f;
 	}
 	clusterId = -1;

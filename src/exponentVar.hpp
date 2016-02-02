@@ -1,6 +1,5 @@
 #include <cmath>
 #include <iostream>
-#define DIMESION 3
 
 class exponentVar{
 private :

@@ -26,7 +26,7 @@ double nodeCollection::addRepulsionDir(blackHoleNode* unp, double* dir, exponent
 		}
 		double tmp = repuFactor * unp->getDegree() * (*vect)[i]->getDegree() * pow(dist, repuExponent-2);
 
-		for (int d = 0; d < DIMESION; d++){
+		for (int d = 0; d < DIMENSION; d++){
 			dir[d] -= (pos2[d] - pos[d]) * tmp;
 		}
 	}	
@@ -57,7 +57,7 @@ double nodeCollection::addAttractionDir(blackHoleNode* unp, double* dir, exponen
 
 			double tmp = pow(dist, attrExponent-2);
 
-			for (int d = 0; d < DIMESION; d++){
+			for (int d = 0; d < DIMENSION; d++){
 				dir[d] += (pos2[d] - pos[d]) * tmp;
 			}
 		}
@@ -259,7 +259,7 @@ double nodeCollection::addRepulsionDir(blackHoleNode* unp, double* dir, exponent
 
 	double tmp = repuFactor * unp->getDegree() * tree->getWeight() * pow(dist, repuExponent-2);
 
-	for (int z = 0; z < DIMESION; z++){
+	for (int z = 0; z < DIMENSION; z++){
 		dir[z] -= (pos2[z] - pos[z]) * tmp;
 	}
 	return tmp * abs(repuExponent-1);
@@ -315,7 +315,7 @@ double nodeCollection::addAttractionDirA(blackHoleNode* unp, double* dir, expone
 		}
 		double tmp = pow(dist, attrExponent-2);
 		
-		for (int z = 0; z < DIMESION; z++){
+		for (int z = 0; z < DIMENSION; z++){
 			dir[z] += (pos2[z] - pos[z]) * tmp;
 		}
 	}

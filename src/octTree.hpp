@@ -1,9 +1,9 @@
 #ifndef _OCT_H_
 #define _OCT_H_
 
-#define DIMESION 3
 
 #include "blackHoleNode.hpp"
+#include "Util.hpp"
 
 class memoryManager;
 
@@ -14,10 +14,10 @@ public :
 	OctTree** children;
 	int childCount;
 	int childLength;
-	double position[DIMESION];
+	double position[DIMENSION];
 	double weight;
-	double minPos[DIMESION];
-	double maxPos[DIMESION];
+	double minPos[DIMENSION];
+	double maxPos[DIMENSION];
 
 public :
 
