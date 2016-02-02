@@ -77,6 +77,7 @@ double nodeCollection::getEnergyA(blackHoleNode* unp, exponentVar& expVar ){
 	std::vector<blackHoleNode*>* vect = &nodeVec;
 	
 	double energy = 0.0;
+	double* pos = unp->getValues();
 	for (unsigned int i = 0; i < nodeVec.size(); i++){
 		if(checkEdge((*vect)[i]->getID(), unp->getID())){
 			double dst = CalculateUtil::calcDist_DIM(unp->getValues(), (*vect)[i]->getValues());
@@ -172,6 +173,8 @@ void nodeCollection::degreeSet(){
 
 void nodeCollection::clearAll(){
 	
+	int len = nodeVec.size();
+	
 	delete [] degMat;
 
 	for(unsigned int i = 0; i < nodeMap.size(); i++){
@@ -198,6 +201,7 @@ double nodeCollection::getEnergyR(blackHoleNode* unp, exponentVar& expVar, OctTr
 	if(tree->node == unp)
 		return 0.0;	
 
+	std::vector<blackHoleNode*>* vect = &nodeVec;
 	double repuExponent = expVar.getRepuExponent();	
 	double repuFactor = expVar.getRepuFactor();
 
@@ -239,16 +243,23 @@ double nodeCollection::addRepulsionDir(blackHoleNode* unp, double* dir, exponent
 		return 0.0;
 	}
 
+
+	//std::cout<<"node id = "<<unp->getID()<<"  Tree node id = "<<tree->node->getID()<<std::endl;
+
+	std::vector<blackHoleNode*>* vect = &nodeVec;
 	double repuFactor = expVar.getRepuFactor();
 	double repuExponent = expVar.getRepuExponent();
 
 
 	double* pos = unp->getValues();
 	double* pos2 = tree->getValues();
+	//���⸦ ��ħ
 	double dist = CalculateUtil::calcDist_DIM(pos, pos2);
 
 
 	if (dist == 0.0) return 0.0;
+
+	double treeWidth = tree->getWidth();
 
 	if (tree->childCount > 0 && dist < 1.0 * tree->getWidth()){
 		for(int i = 0; i < tree->childLength; i++){
@@ -327,6 +338,7 @@ double nodeCollection::addAttractionDirA(blackHoleNode* unp, double* dir, expone
 double nodeCollection::getEnergy(blackHoleNode* unp, exponentVar& expVar, OctTree* tree){
 	double gr = getEnergyR(unp, expVar, tree);
 	double ga = getEnergyAA(unp, expVar, tree);
+	
 	return gr + ga;
 }
 
@@ -344,7 +356,12 @@ void nodeCollection::clearClusterId(){
 	}
 }
 
+
+
+
+
 void nodeCollection::canopyClustering(double threshold){
+	double distance;
 	double* ori;
 	double* com;
 	int clusterCnt = 1;
@@ -364,3 +381,35 @@ void nodeCollection::canopyClustering(double threshold){
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

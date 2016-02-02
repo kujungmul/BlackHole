@@ -1,5 +1,4 @@
 #include "octTree.hpp"
-#include "memoryManager.hpp"
 
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
@@ -33,7 +32,9 @@ OctTree::OctTree(blackHoleNode* node, double* position, double* minPos, double* 
 
  void OctTree::setElement(blackHoleNode* node, double* position, double* minPos, double* maxPos, memoryManager* mgr){
 	
+
 	children = mgr->get_children();
+	
 	for (int s = 0; s < (int)pow(2.0, DIMENSION); s++){
 		children[s] = NULL;
 	}
@@ -41,12 +42,26 @@ OctTree::OctTree(blackHoleNode* node, double* position, double* minPos, double* 
 	this->childCount = 0;
 	this->node = node;
 
-	for (int i = 0; i < DIMENSION; i++){
-		this->position[i] = position[i];
-		this->minPos[i] = minPos[i];
-		this->maxPos[i] = maxPos[i];
+
+	for (int zp = 0; zp < DIMENSION; zp++){
+		this->position[zp] = position[zp];
+		this->minPos[zp] = minPos[zp];
+		this->maxPos[zp] = maxPos[zp];
 	}
+
 	this->weight = node == NULL ? 0.0 : node->getDegree();
+}
+
+ double OctTree::getPosX(){
+	return position[0];
+}
+
+ double OctTree::getPosY(){
+	return position[1];
+}
+
+ blackHoleNode* OctTree::getNode(){
+	return node;
 }
 
  int OctTree::getLength(){
@@ -59,6 +74,10 @@ OctTree::OctTree(blackHoleNode* node, double* position, double* minPos, double* 
 
  double OctTree::getWeight(){
 	return weight;
+}
+
+ bool OctTree::getUsed(){
+	return used;
 }
 
  void OctTree::addNode(blackHoleNode* newNode, double* newPos, int depth, memoryManager* mgr){

@@ -1,13 +1,12 @@
-
-
 #define DIMENSION 2
+#include <cmath>
 
 #pragma once
 
-//Common Utility for calculate distances
+
+//To calculate distances
 class CalculateUtil {
 public :
-	//calculate distance
 	static double calcDist_DIM(double* a, double* b){
 		double sum = 0.0;
 		for (int i = 0; i < DIMENSION; i++){

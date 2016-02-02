@@ -29,4 +29,5 @@ public :
 	inline void setRepuFactor(double v) 	{  repuFactor = v; }
 	inline void setFinalAttrExponent(double v) {  finalAttrExponent= v;}
 	inline void setFinalRepuExponent(double v) {  finalRepuExponent= v;}
+	
 };

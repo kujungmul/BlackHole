@@ -1,10 +1,10 @@
+#include "Util.hpp"
 #include <set>
 #include <vector>
 #include <string>
 #include <ctime>
 #include <cmath>
 #include <algorithm>
-#include "Util.hpp"
 
 #pragma once
 
@@ -30,12 +30,10 @@ public :
 	blackHoleNode();
 	blackHoleNode(int nNodeId);
 	blackHoleNode(int nNodeId, int other);
-	void setNode(int nI, double* ar);
 	void setClusterId(int x);
 	int getClusterId();
 	bool isnot_labeled();
 	bool setEdge(int other);
-	void increaseDegree();
 	int getDegree();
 	double* getValues();
 	void setDegree(int x);

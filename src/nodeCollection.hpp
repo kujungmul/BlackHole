@@ -4,17 +4,13 @@
 #include <set>
 #include <map>
 #include <vector>
-
-#include "blackHoleNode.hpp"
-#include "Util.hpp"
 #include "exponentVar.hpp"
 #include "octTree.hpp"
-
 
 #pragma once
 
 struct by_id { 
-    bool operator()(blackHoleNode* const &a, blackHoleNode* const &b) const { 
+    bool operator()(blackHoleNode* const &a, blackHoleNode* const &b) const {
         return a->getID() < b->getID();
     }
 };
@@ -27,6 +23,7 @@ private :
 	float** adjMat;
 public :
 	void putNode(int nNodeId, int other);
+	//void setClear();
 	void clearAll();
 	void copyToVector();	
 	bool checkEdge(int id1_notMinus, int id2_notMinus);
@@ -49,7 +46,7 @@ public :
 	double getEnergyR(blackHoleNode* unp , exponentVar& expVar);
 	double getEnergyA(blackHoleNode* unp , exponentVar& expVar);
 	double findInitEnergy(exponentVar& expVar);
-
+	//
 	//Barneshut
 	double addRepulsionDir(blackHoleNode* unp, double* dir, exponentVar& expVar,OctTree* octTree);
 	double addAttractionDir(blackHoleNode* unp, double* dir, exponentVar& expVar,OctTree* octTree);

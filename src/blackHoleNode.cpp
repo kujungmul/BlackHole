@@ -2,8 +2,8 @@
 
 bool node::setPosition(int nI, double* ar){
 	nodeId = nI;
-	for (int z = 0; z < DIMENSION; z++){
-		points[z] = ar[z];
+	for (int temp = 0; temp < DIMENSION; temp++){
+		points[temp] = ar[temp];
 	}
 	return true;
 }
@@ -20,9 +20,11 @@ void node::setValue(double value, int idx){
 	points[idx] = value;
 }
 
+
 double* blackHoleNode::getValues(void){
 	return points;
 }
+
 
 void blackHoleNode::setDegree(int x){
 	degree = x;
@@ -56,6 +58,7 @@ bool blackHoleNode::findEdge(int origin, int id){
 	return std::binary_search(eSet.begin(), eSet.end(), id);
 }
 
+
 blackHoleNode::blackHoleNode(int nNodeId, int ep){
 	nodeId = nNodeId;
 	for (int z = 0; z < DIMENSION; z++){
@@ -66,16 +69,6 @@ blackHoleNode::blackHoleNode(int nNodeId, int ep){
 	eSet.push_back(ep);
 }
 
-void blackHoleNode::increaseDegree(){
-	degree++;
-}
-
 int blackHoleNode::getDegree(){
 	return degree;
-}
-
-void blackHoleNode::setNode(int nI, double* sp){
-	setPosition(nI, sp);
-	degree = 0;
-	clusterId = -1;
 }
