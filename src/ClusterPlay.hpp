@@ -54,7 +54,6 @@ public :
 			memMgr.setCurrent(0);
 
 			updateBarneshut(i, &nc, expVar, &memMgr, iter);	//UPDATE FUNCTION
-
 		}
 //#############################END#############################
 

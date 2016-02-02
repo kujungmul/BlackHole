@@ -23,7 +23,7 @@ int main(int argc, char* args[]){
 	fileName.append("_position.out");
 
 
-	DBscanPlay::dbscanCalculator((char *)fileName.c_str(), 5, 0.1/100.0f);
+	//DBscanPlay::dbscanCalculator((char *)fileName.c_str(), 5, 0.1/100.0f);
 
 // 	if (strcmp(args[1], "dbscan") == 0){
 //		if (argc != 5){
