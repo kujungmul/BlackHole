@@ -76,10 +76,6 @@ OctTree::OctTree(blackHoleNode* node, double* position, double* minPos, double* 
 	return weight;
 }
 
- bool OctTree::getUsed(){
-	return used;
-}
-
  void OctTree::addNode(blackHoleNode* newNode, double* newPos, int depth, memoryManager* mgr){
 	if (newNode->getDegree() == 0)
 		return;

@@ -22,7 +22,6 @@ public:
 double calcDist(float* a[DIMENSION], int i, int j ){
 		double sum = 0.0;
 		for (int z = 0; z < DIMENSION; z++){
-			//sum = sum + ((a[i] - b[i]) * (a[i] - b[i]));
 			sum = sum + ((a[z][i] - a[z][j]) * (a[z][i] - a[z][j]));
 		}
 
@@ -50,12 +49,7 @@ public :
 		std::string line;
 		std::string x, y, z, z_1, del, cluster;
 		int nodeNum = 0;
-		int nid;
-		int maxValue, nodeNumber;
 		char oneLine[256];
-		maxValue = 0;
-		nodeNumber = 0;
-		maxValue = 0;
 		if (nodeCmty.is_open()){//calc maximal cluster size
 			while (getline(nodeCmty, line)){
 				strcpy(oneLine, line.c_str());
@@ -194,21 +188,18 @@ public :
 			}
 		}
 		//min-max normalization
-		//std::cout<<"original value = "<<std::endl;
 		for (int i = 0; i < nodeNum; i++){
 			original[i].x = ((original[i].x - 0) / nodeNum) * 1;
 			original[i].y = ((original[i].y - minVal) / (maxVal - minVal));
-			// std::cout<<original[i].x<<"\t"<<original[i].y<<std::endl;
 		}
 
-		//std::cout<<"################################"<<std::endl;
-		//std::cout<<"rotated value = "<<std::endl;
+		//rotation
 		for (int i = 0; i < nodeNum; i++){
 			original[i].x = cos(-PI / 4.0f) * original[i].x + sin(-PI / 4.0f)*(original[i].y - 1.0f);
 			original[i].y = -sin(-PI / 4.0f) * original[i].x + cos(-PI / 4.0f)*(original[i].y - 1.0f);
-			//std::cout<<original[i].x<<"\t"<<original[i].y<<std::endl;
 		}
-		int minValue = 9999;
+
+		minVal = 999999;
 		int minValueIdx = -1;
 		for (int i = 0; i < nodeNum; i++){
 			if (original[i].y <= minVal){
@@ -226,8 +217,6 @@ public :
 
 		delete  dist_sorted;
 		delete  dist_vec;
-
-
 
 		std::cout << "Step 6\t";
 

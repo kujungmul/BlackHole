@@ -36,8 +36,8 @@ public :
 	double* getValues();
 	void setDegree(int x);
 	std::vector<int>* getEdgeSet();
+	bool findEdge(int origin, int id);
 	inline bool operator<(const blackHoleNode& i) const{
 		return nodeId < i.getID();	
 	};
-	bool findEdge(int origin, int id);
 };

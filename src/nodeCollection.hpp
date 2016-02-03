@@ -32,30 +32,15 @@ public :
 	bool checkExists(int nID);
 	void degreeSet();
 	void clearClusterId();
-	void canopyClustering(double threshold);
-	void putEdge(int a, int b);
 	std::vector<blackHoleNode*>* getNodeVec();
 	std::map<int, blackHoleNode*>& getNodeMap();
 
-	//Classic
-	double addRepulsionDir(blackHoleNode* unp, double* dir, exponentVar& expVar);
-	double addAttractionDir(blackHoleNode* unp, double* dir, exponentVar& expVar);
-	void setDir(blackHoleNode* unp, double* dir,  exponentVar& expVar);
-	double getEnergy(blackHoleNode* unp, exponentVar& expVar);
-	double getEnergyR(blackHoleNode* unp , exponentVar& expVar);
-	double getEnergyA(blackHoleNode* unp , exponentVar& expVar);
-	double findInitEnergy(exponentVar& expVar);
-	//
 	//Barneshut
 	double addRepulsionDir(blackHoleNode* unp, double* dir, exponentVar& expVar,OctTree* octTree);
-	double addAttractionDir(blackHoleNode* unp, double* dir, exponentVar& expVar,OctTree* octTree);
+	double addAttractionDirA(blackHoleNode* unp, double* dir, exponentVar& expVar,OctTree* octTree);
 	void setDir(blackHoleNode* unp, double* dir,  exponentVar& expVar,OctTree* octTree);
 	double getEnergy(blackHoleNode* unp, exponentVar& expVar,OctTree* octTree);
 	double getEnergyR(blackHoleNode* unp , exponentVar& expVar,OctTree* octTree);
-	double getEnergyA(blackHoleNode* unp , exponentVar& expVar, OctTree* octTree);
-	double findInitEnergy(exponentVar& expVar, OctTree* octTree);
-
-	//Advanced Version
-	double addAttractionDirA(blackHoleNode* unp, double* dir, exponentVar& expVar,OctTree* octTree);
 	double getEnergyAA(blackHoleNode* unp , exponentVar& expVar, OctTree* octTree);
+	double findInitEnergy(exponentVar& expVar, OctTree* octTree);
 };

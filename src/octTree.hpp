@@ -1,15 +1,14 @@
 #ifndef _OCT_H_
 #define _OCT_H_
 
+#include "Util.hpp"
 #include "blackHoleNode.hpp"
 #include "memoryManager.hpp"
-
 
 class memoryManager;
 
 class OctTree{
 public :
-	bool used;
 	static const int MAX_DEPTH = 18;
 	blackHoleNode* node;
 	OctTree** children;

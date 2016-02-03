@@ -11,10 +11,7 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #pragma once
 
-#define DIMENSION 2
 
-double Ecurrent = 0.0;
-double Eprior = 0.0;
 
 class ClusterPlay{
 public :
@@ -233,13 +230,9 @@ public :
 
 			if (i <= 0.6*iter) {
 				// use energy model with few local minima 
-				
 				expVar.setAttrExponent(expVar.getAttrExponent() + 1.1 * ( 1.0 - expVar.getFinalRepuExponent() ));
 				expVar.setRepuExponent(expVar.getRepuExponent() + 0.9 * ( 1.0 - expVar.getFinalRepuExponent() ));
-
 			} else if (i <= 0.9*iter) {
-
-				
 				expVar.setAttrExponent(expVar.getAttrExponent() + 1.1 * ( 1.0 - expVar.getFinalRepuExponent() ) * (0.9 - ((double)i)/iter) / 0.3 );
 				expVar.setRepuExponent(expVar.getRepuExponent() + 0.9 * ( 1.0 - expVar.getFinalRepuExponent() ) * (0.9 - ((double)i)/iter) / 0.3 );		
 			}
