@@ -13,18 +13,19 @@
 
 const double PI = 3.141592653589793238463;
 
+// To express points of distances
 class point{
 public:
 	float x;
 	float y;
 };
 
+// calculate N-Dimensional matrix's distances
 double calcDist(float* a[DIMENSION], int i, int j ){
 		double sum = 0.0;
 		for (int z = 0; z < DIMENSION; z++){
 			sum = sum + ((a[z][i] - a[z][j]) * (a[z][i] - a[z][j]));
 		}
-
 		return sqrt(sum);
 }
 
@@ -34,9 +35,15 @@ public :
 
 		clock_t start_time, end_time;	  // clock_t
 		start_time = clock();				  // Start_Time
-		std::ifstream nodeCmty; 	std::ifstream nodeCmty2;
-		std::ofstream ofs;		std::ofstream distanceofs;
-		std::string str(inputFile);
+
+		int nodeNum = 0;
+		char oneLine[256];
+		std::string line;
+		std::string x, y, z, z_1, del, cluster;
+
+		std::ifstream nodeToCommunity1; 	std::ifstream nodeToCommunity2;
+		std::ofstream ofs;		std::ofstream distanceOutputStream;
+		std::string inputFileName(inputFile);
 
 		std::stringstream out;
 		out << minPts;
@@ -45,13 +52,10 @@ public :
 		ss << removePercentage * 100;
 		std::string removeP(ss.str());
 
-		nodeCmty.open(inputFile);
-		std::string line;
-		std::string x, y, z, z_1, del, cluster;
-		int nodeNum = 0;
-		char oneLine[256];
-		if (nodeCmty.is_open()){//calc maximal cluster size
-			while (getline(nodeCmty, line)){
+		nodeToCommunity1.open(inputFile);
+
+		if (nodeToCommunity1.is_open()){//calc maximal cluster size
+			while (getline(nodeToCommunity1, line)){
 				strcpy(oneLine, line.c_str());
 				del = strtok(oneLine, "\t ");
 				x = strtok(NULL, "\t ");
@@ -63,9 +67,8 @@ public :
 			std::cout << "can't read file" << std::endl;
 		}
 
-
-		nodeCmty.close();
-		nodeCmty2.open(inputFile);
+		nodeToCommunity1.close();
+		nodeToCommunity2.open(inputFile);
 
 		int* communitySelf = new int[nodeNum];
 
@@ -77,7 +80,7 @@ public :
 
 		bool* visited = new bool[nodeNum];
 		int* countN = new int[nodeNum];
-		int* cmty = new int[nodeNum];
+		int* communityInfo = new int[nodeNum];
 		bool* isSeed = new bool[nodeNum];
 		for (int ttt = 0; ttt < nodeNum; ttt++){
 			for(int j = 0; j < DIMENSION; j++){
@@ -85,32 +88,27 @@ public :
 			}
 			visited[ttt] = false;
 			countN[ttt] = 0;
-			cmty[ttt] = -1;
+			communityInfo[ttt] = -1;
 			isSeed[ttt] = false;
 		}
 
-		int tmo = 0;
-		std::string tempp;
-		if (nodeCmty2.is_open()){
-			while (getline(nodeCmty2, line)){
+		int counter = 0;
+		std::string tempVar;
+		if (nodeToCommunity2.is_open()){
+			while (getline(nodeToCommunity2, line)){
 				strcpy(oneLine, line.c_str());
 				del = strtok(oneLine, "\t ");
-
-
-
 				for(int j = 0; j < DIMENSION; j++){
-					tempp = strtok(NULL, "\t ");
-					points[j][tmo] = atof(tempp.c_str());
+					tempVar = strtok(NULL, "\t ");
+					points[j][counter] = atof(tempVar.c_str());
 				}
-				tmo++;
+				counter++;
 			}
 		}
 
 		else{
 			std::cout << "can't read file" << std::endl;
 		}
-
-		std::cout << "Step 2\t";
 
 		float* dist_vec = new float[nodeNum];
 		float* dist_sorted = new float[nodeNum];
@@ -130,9 +128,6 @@ public :
 
 		std::sort(dist_vec, dist_vec + nodeNum, std::greater< float>());
 
-		std::cout << "Step 3\t";
-
-
 		//NORMALIZATION ********************
 		//Removing outlier to maximal value
 
@@ -146,22 +141,14 @@ public :
 
 		std::sort(dist_vec, dist_vec + nodeNum, std::greater< float>());
 
-
 		//**********************************
 
-
-		std::cout << inputFile << std::endl;
-
-
-		std::string outputdistance = str + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_distance.dat";
-		distanceofs.open(outputdistance.c_str());
+		std::string outputdistance = inputFileName + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_distance.dat";
+		distanceOutputStream.open(outputdistance.c_str());
 		for (int ppo = 0; ppo < nodeNum; ppo++){
-			distanceofs << ppo + 1 << "\t" << dist_vec[ppo] << std::endl;
+			distanceOutputStream << ppo + 1 << "\t" << dist_vec[ppo] << std::endl;
 		}
-
-		distanceofs.close();
-
-
+		distanceOutputStream.close();
 
 		//Save to point array
 		point* original = new point[nodeNum];
@@ -169,12 +156,6 @@ public :
 			original[i].x = i;
 			original[i].y = dist_vec[i];
 		}
-		std::cout << "Step 4\t";
-
-
-
-
-
 
 		//find minVal, maxVal of Y
 		float maxVal = -1;
@@ -208,17 +189,11 @@ public :
 			}
 		}
 
-		std::cout << "rotated minValue = " << minVal << std::endl;
-		std::cout << "rotated minValue idx = " << minValueIdx << std::endl;
-		std::cout << "dist_vec[minidx] = " << dist_vec[minValueIdx] << std::endl;
+		std::cout << "Approximated Value for DBSCAN = " << dist_vec[minValueIdx] << std::endl;
 		eps = dist_vec[minValueIdx];
-		std::cout << "Step 5\t";
-
 
 		delete  dist_sorted;
 		delete  dist_vec;
-
-		std::cout << "Step 6\t";
 
 		//##############################################################
 		//Algorithm Start
@@ -234,9 +209,7 @@ public :
 
 
 		int currentCmty = 0;
-
 		int icmty;
-
 		std::set< int> setN;
 
 		for (int i = 0; i < nodeNum; i++){
@@ -247,10 +220,10 @@ public :
 			if (countN[i] >= minPts){   //NeighborPts = regionQuery(P, eps)
 				isSeed[i] = true;
 
-				if (cmty[i] == -1){
-					cmty[i] = ++currentCmty;
+				if (communityInfo[i] == -1){
+					communityInfo[i] = ++currentCmty;
 				}
-				icmty = cmty[i];
+				icmty = communityInfo[i];
 
 				for (int j = 0; j < nodeNum; j++){  //insert one hop
 					if (i == j)
@@ -285,8 +258,8 @@ public :
 						}
 					}
 
-					if (cmty[cur] == -1 || cmty[cur] == 0)
-						cmty[cur] = icmty;
+					if (communityInfo[cur] == -1 || communityInfo[cur] == 0)
+						communityInfo[cur] = icmty;
 				}
 
 				for (int j = 0; j < nodeNum; j++){
@@ -296,42 +269,35 @@ public :
 					if (calcDist(points, i, j) <= eps){
 						if (visited[j] == false){   //unvisited
 							visited[j] = true;
-							cmty[j] = cmty[i];
+							communityInfo[j] = communityInfo[i];
 						}
 					}
 				}
 			}
 
 			else {  //mark P as noise
-				if (cmty[i] == -1)
-					cmty[i] = 0;
+				if (communityInfo[i] == -1)
+					communityInfo[i] = 0;
 			}
 		}
 		end_time = clock();				   // End_Time
 
 
-		std::cout << "Step 7\t" << std::endl;
-
 		std::ostringstream oout;
 		oout << eps;
 		std::string varAs = oout.str();
-		std::string outputname = str + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_EPS_" + varAs + ".dat";
+		std::string outputname = inputFileName + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_EPS_" + varAs + ".dat";
 		ofs.open(outputname.c_str());
 		for (int z = 0; z< nodeNum; z++){
-			ofs << z + 1 << "\t" << cmty[z] << "\t" << isSeed[z] << std::endl;
+			ofs << z + 1 << "\t" << communityInfo[z] << "\t" << isSeed[z] << std::endl;
 		}
 
-
-
-
-
-
 		printf("Time : %f\n", ((double)(end_time - start_time)) / CLOCKS_PER_SEC);
-
+		printf("######################################\nDBSCAN IS FINISHED!");
 
 		delete[] original;
 		ofs.close();
-		nodeCmty2.close();
+		nodeToCommunity2.close();
 
 		for(int z = 0; z < DIMENSION; z++){
 			delete[] points[z];
@@ -339,7 +305,7 @@ public :
 
 		//delete points;
 
-		delete[] cmty;
+		delete[] communityInfo;
 		delete[] visited;
 		delete[] isSeed;
 		delete[]communitySelf;

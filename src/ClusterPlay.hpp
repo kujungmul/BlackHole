@@ -12,7 +12,6 @@
 #pragma once
 
 
-
 class ClusterPlay{
 public :
 	static void play(char* inputfile, double alpha, char* alphaChar){
@@ -70,13 +69,11 @@ public :
 		delete outputName;
 
 
-		std::cout<<"######################################"<<std::endl;
-		std::cout<<std::endl;
+		printf("######################################\nLAYOUT IS FINISHED!"
+				"\n######################################\n\n");
 
 		nc.clearAll();
-		std::cout<<"current mempoint = "<<memMgr.getCurrent()<<std::endl;
 		memMgr.dealloc();
-		//oct->clearMemory();
 	}
 
 

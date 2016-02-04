@@ -8,6 +8,8 @@
 
 #pragma once
 
+// Blackhole node is a node. It manage list of neighbors.
+
 class node{
 protected :
 	int nodeId;
@@ -18,7 +20,6 @@ public :
 	double getValue(int idx);
 	void setValue(double value,int idx);
 	int getID() const;
-	
 };
 
 class blackHoleNode : public node {
