@@ -15,6 +15,8 @@ private :
 	std::ifstream inputFileStream1;
 	std::ifstream inputFileStream2;
 public :
+
+	// Read edgelist input file
 	inline void readFile(char* filePath, nodeCollection* ncp){
 		inputFileStream1.open(filePath);
 			std::string line;
@@ -74,6 +76,7 @@ public :
 			
 	}
 
+	// Write information to output file
 	inline void writeFile(char* filePath, nodeCollection* ncp){
 		outputFileStream.open(filePath);
 		std::vector<blackHoleNode*>* vect = ncp->getNodeVec();

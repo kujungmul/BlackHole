@@ -8,8 +8,6 @@
 
 #pragma once
 
-// Blackhole node is a node. It manage list of neighbors.
-
 class node{
 protected :
 	int nodeId;
@@ -22,6 +20,7 @@ public :
 	int getID() const;
 };
 
+// Blackhole node is a node which manage neighbor information
 class blackHoleNode : public node {
 private :
 	int clusterId;
