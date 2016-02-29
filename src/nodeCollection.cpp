@@ -16,14 +16,6 @@ void nodeCollection::putNode(int nNodeId, int other){
 	}
 }
 
-void nodeCollection::copyToVector(){
-	
-	for(std::map<int, blackHoleNode*>::iterator it = nodeMap.begin(); it != nodeMap.end(); it++){
-		nodeVec.push_back(it->second);	
-	}
-	std::sort(nodeVec.begin(), nodeVec.end(), by_id());
-}
-
 void nodeCollection::setAdjMat(int maxValue){
 	int len = maxValue;
 	adjMat = new float*[len];

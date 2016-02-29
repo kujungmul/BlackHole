@@ -1,7 +1,6 @@
 #include "Util.hpp"
 #include "blackHoleNode.hpp"
 
-
 bool node::setPosition(int nI, double* ar){
 	nodeId = nI;
 	for (int temp = 0; temp < DIMENSION; temp++){
@@ -21,6 +20,7 @@ double node::getValue(int idx){
 void node::setValue(double value, int idx){
 	points[idx] = value;
 }
+
 
 double* blackHoleNode::getValues(void){
 	return points;

@@ -25,6 +25,7 @@ class blackHoleNode : public node {
 private :
 	int clusterId;
 	int degree;
+	// Set of edges
 	std::vector<int> eSet;
 public :
 	blackHoleNode(int nNodeId, int other);

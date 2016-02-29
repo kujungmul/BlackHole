@@ -24,7 +24,6 @@ private :
 public :
 	void putNode(int nNodeId, int other);
 	void clearAll();
-	void copyToVector();	
 	bool checkEdge(int id1_notMinus, int id2_notMinus);
 	void setAdjMat(int maxValue);
 	void setDegMat(int maxValue);

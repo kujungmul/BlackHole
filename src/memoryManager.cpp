@@ -13,7 +13,6 @@ memoryManager::memoryManager(int nodeNum){
 	for(int j = 0; j < maxNum; j++){
 		childVec.push_back(new OctTree*[(int)pow(2.0, DIMENSION)]);
 	}
-	//childTemp = new (OctTree*[8])[maxNum];
 }
 
 OctTree** memoryManager::get_children(){
@@ -61,7 +60,7 @@ void memoryManager::restore(){
 	child_current = prior;
 }
 
-void memoryManager::swap(OctTree* swapper){	//prior ���� �ֶ� �ֶ̾� �ٲ��ּ���
+void memoryManager::swap(OctTree* swapper){
 	if(prior == -1 && current == prior)
 		return;
 	prior++;
