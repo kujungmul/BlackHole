@@ -4,7 +4,7 @@
 #pragma once
 
 
-//To calculate distances
+//To calculate distance of two array
 class CalculateUtil {
 public :
 	static double calcDist_DIM(double* a, double* b){
