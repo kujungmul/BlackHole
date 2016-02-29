@@ -9,7 +9,7 @@ int main(int argc, char* args[]){
 
 	if(argc < 3){
 		std::cerr<<"Error occured! please check the usage!"<<std::endl;
-		std::cerr<<"usage : BlackHole.exe [Input] [Alpha]"<<std::endl;
+		std::cerr<<"usage : BlackHole.exe [Input] [Alpha] [MinPTS]"<<std::endl;
 		return -1;
 	}
 

@@ -21,35 +21,40 @@ public :
 		nodeCollection nc;
 		edgeReader fr;
 		
+		// Read inputfile and make a graph
 		fr.readFile(inputfile, &nc);
 
 		nc.copyToVector();	//To use vector (vector is much faster than set,)
 		nc.degreeSet();
+
 		exponentVar expVar(alpha, 0.0, nc.getSumOfDegree());
 
 		memoryManager memMgr(nc.getNodeVec()->size());
 
-
+		// Build OCT TREE
 		OctTree* tt = buildOctTree(&nc, &memMgr);
 
 		std::vector<blackHoleNode*>* vecp = nc.getNodeVec();
+
+		// To get initial energy
 		double initEnergy = 0.0;
 		for(unsigned int k = 0; k < (*vecp).size(); k++){
 			initEnergy += nc.getEnergy((*vecp)[k], expVar, tt); 
 		}
 		std::cout<<"initEnergy = "<<initEnergy<<std::endl;
-		memMgr.setChildCurrent(0);
-		memMgr.setCurrent(0);
 
 		start_time = clock(); 
 
-//#########################UPDATE FUNCTION#########################
+		//#########################UPDATE FUNCTION#########################
 		for(int i = 0; i < iter; i++){
+			// Memory point initialize
 			memMgr.setChildCurrent(0);
 			memMgr.setCurrent(0);
+
+			// Update Barnes hut algorithm
 			updateBarneshut(i, &nc, expVar, &memMgr, iter);	//UPDATE FUNCTION
 		}
-//#############################END#############################
+		//#############################END#############################
 
 		end_time = clock();  
 		printf("Time : %f\n", ((double)(end_time-start_time)) / CLOCKS_PER_SEC);  
@@ -63,6 +68,7 @@ public :
 		outputName[fileName.size()]=0;
 		memcpy(outputName,fileName.c_str(),fileName.size());
 
+		// Write graph information to file
 		fr.writeFile(outputName,&nc);
 
 		delete outputName;
