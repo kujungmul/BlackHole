@@ -85,7 +85,8 @@ public :
 			for (int p = 0; p < DIMENSION; p++){
 				outputFileStream << (*vect)[i]->getValue(p) << "\t";
 			}
-			outputFileStream <<(*vect)[i]->getClusterId()<<std::endl;
+			//outputFileStream <<(*vect)[i]->getClusterId()<<std::endl;
+			outputFileStream << std::endl;
 		}
 		std::cout<<"####  FILE WRITE FINISHED####"<<std::endl;
 		outputFileStream.close();

@@ -143,12 +143,12 @@ public :
 
 		//**********************************
 
-		std::string outputdistance = inputFileName + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_distance.dat";
-		distanceOutputStream.open(outputdistance.c_str());
-		for (int ppo = 0; ppo < nodeNum; ppo++){
-			distanceOutputStream << ppo + 1 << "\t" << dist_vec[ppo] << std::endl;
-		}
-		distanceOutputStream.close();
+//		std::string outputdistance = inputFileName + "_MinPts_" + out.str() + "_RemovePercent_" + removeP + "_distance.dat";
+//		distanceOutputStream.open(outputdistance.c_str());
+//		for (int ppo = 0; ppo < nodeNum; ppo++){
+//			distanceOutputStream << ppo + 1 << "\t" << dist_vec[ppo] << std::endl;
+//		}
+//		distanceOutputStream.close();
 
 		//Save to point array
 		point* original = new point[nodeNum];
